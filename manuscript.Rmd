@@ -83,11 +83,49 @@ denovolyzeByClass(dnm.genes=autismDeNovos$gene,
 ```
 
 There are a number of additional optional arguments. Information on these, and help generally, is available using the help function
-```{r}
-?denovolyze
+```{r, eval=FALSE}
+?denovolyzeByClass
 ```
 
+`denovolyzeByClass` is a wrapper function
 
+**HERE**
+
+
+#BASIC PROTOCOL 2
+##BASIC PROTOCOL TITLE
+Introductory paragraph
+
+###Materials
+As for protocol 1
+
+Protocol steps  
+Step annotations
+
+#BASIC PROTOCOL 3
+##BASIC PROTOCOL TITLE
+Introductory paragraph
+
+###Materials
+As for protocol 1
+
+Protocol steps  
+Step annotations
+
+#BASIC PROTOCOL 4
+##BASIC PROTOCOL TITLE
+Introductory paragraph
+
+###Materials
+As for protocol 1
+
+Protocol steps  
+Step annotations
+
+
+
+
+```{r documentTemplate, eval=FALSE}
 #BASIC PROTOCOL 1
 ##BASIC PROTOCOL TITLE
 Introductory paragraph
@@ -111,8 +149,7 @@ Introductory paragraph
 ###Materials
 Protocol steps  
 Step annotations
-
-
+```
 
 ##REAGENTS AND SOLUTIONS
 
