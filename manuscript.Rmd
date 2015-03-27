@@ -1,0 +1,147 @@
+---
+title: "Unit Title: "
+author: "Authors: James S. Ware^1-4^, Kaitlin E. Samocha^1-3^, Mark J. Daly^1-3^"
+output:
+  word_document:
+    reference_docx: template.docx
+---
+
+Title ideas:  
+A statistical aproach to assess the frequency of *de novo* variation  
+Interpreting *de novo* variation in human disease using **denovolyzeR**  
+Interpreting *de novo* variation in human disease: a model-based approach  
+
+Contact information  
+^1^ Department of Genetics, Harvard Medical School, Boston MA  
+^2^ Broad Institute of MIT and Harvard, Cambridge MA  
+^3^ Analytical and Translational Genetics Unit, Massachusetts General Hospital and Harvard Medical School, Boston MA  
+^4^ NIHR Cardiovascular Biomedical Research Unit at Royal Brompton Hospital and Imperial College London, London UK  
+
+##ABSTRACT
+###Keywords:
+
+##INTRODUCTION
+
+Spontaneously arising *de novo* genetic variants are important in human disease{ref}.  Each of us carries approximately 100 variants that have not been inherited from our parents{ref}, but rather have arisen via mutational events in the parental germline or early embryo, with a median of 1 *de novo* variant affecting the protein-coding genome{ref}.
+
+Exome sequencing and analysis of *de novo* mutations has successfully identified genes underlying rare and genetically homogeneous Mendelian diseases. In Kabuki sybdrome, *de novo* mutations were identified in *KMT2D* (*MLL2*) in 9 out of 10 unrelated individuals{ref}, an accumulation that would be extremely improbable in the absence of a causal role in the disease, given the *rarity* and independence of *de novo* mutations.
+
+By contrast, it is more challenging to dissect the role of *de novo* mutations in conditions with high levels of locus heterogeneity, including some Mendelian conditions and all heritable complex traits, where *de novo* mutations are spread across multiple genes, and may play a smaller role in pathogenesis. Here it may be possible to assess the global contribution of *de novo* coding variants to disease by comparing their frequency in cases and controls, given sufficiently large sample sizes.  However, at the level of individual genes, the interpretation of *de novo* mutations is complicated by the background mutation rate, which varies greatly between genes.  As more individuals are sequenced, it is inevitable that multiple *de novo* mutations will be obsereved in some genes by chance.
+
+A statistical framework has recently been developed to address these challenges{ref}, that assesses *de novo* single nucleotide variants in coding sequence.  Briefly, the mutability of each gene is individually assessed based on local sequence context, and the probability that a *de novo* event will arise in a single copy of the gene in one generation is calculated.  The consequence of each possible *de novo* SNP is computed, and *de novo* probabilities are tabulated for each variant class.  For a given study population, *de novo* variants can be evaluated by comparing the observed numbers of variants with the number expected based on this model and the population size, using a poisson framework.  This permits the robust evaluation of *de novo* variation in individual genes, and increases the power of genome-wide analyses.
+
+In this unit, we describe the application of this statistical framework to analyze *de novo* variants using denovolyzeR {url?}, a new open-source software package written for the R statistical software environment{ref}.  We present protocols for four analyses, to assess
+(i) whether there is a genome-wide excess of *de novo* variation for different functional classes of variant,
+(ii) whether there is a genome-wide excess if genes with multiple *de novo* mutations
+(iii) whether individual genes carry an excess of *de novo* variants
+(iv) whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. 
+
+
+#BASIC PROTOCOL 1
+##Assessing the genome-wide burden of *de novo* variants
+This protocol will assess whether there is a genome-wide excess of *de novo* variation for different functional classes of variant
+
+###Materials
+A computer running the R software environment, available for UNIX platforms, Windows and MacOS from http://www.r-project.org.  
+The denovolyzeR package - download and installation options are described at http://denovolyzer.org  
+dplyr and reshape packages.  These dependencies may be installed automatically when denovolyzeR is installed (depending on your installation route). Otherwise they can be installed by running
+```{r, eval=FALSE}
+install.packages("dplyr","reshape")
+```
+A table of de novo variants.  The minimum input comprises two columns of data: gene names, and variant classes (functional consequence of each variant).  
+Example data is included in the denovolyzeR package, and will be used in this protocol. The dataset comprises a `data.frame` of *de novo* variants identified in 1078 individuals with autism{ref}, named `autismDeNovos`.
+It is assumed that readers are able to import their own data into the R environment, using the `read.table` function or equivalent (in R, `?read.table` will provide help).  
+
+1) In R, load the denovolyzeR package
+```{r, message=FALSE, warning=FALSE}
+library(denovolyzeR)
+```
+2) (optional) view the demonstration data provided with the denovolyzeR package.  Alternatively, users may import their own data in an equivalent format.
+```{r}
+dim(autismDeNovos)
+head(autismDeNovos)
+```
+3a) Evaluate the burden
+
+The `denovolyzeByClass` function will perform the required analysis.  The function has three required arguments:  
+- `dnm.genes`: a vector of gene names (of genes containing *de novo* mutations)
+- `dnm.classes`: a vector of variant consequences (corresponding to the gene list)
+####[ insert list of acceptable classes here]
+- `nsamples`: the total number of samples from analysed (includind samples without *de novo* variants).  For the example data, 1078 individuals were sequenced.
+```{r}
+denovolyzeByClass(dnm.genes=autismDeNovos$gene,
+                  dnm.class=autismDeNovos$dnmClass,
+                  nsamples=1078)
+```
+
+The output can be modified to display only a subset of variant classes of interest
+```{r}
+denovolyzeByClass(dnm.genes=autismDeNovos$gene,
+                  dnm.class=autismDeNovos$dnmClass,
+                  nsamples=1078,
+                  include.class=c("mis","lof","all"))
+```
+
+There are a number of additional optional arguments. Information on these, and help generally, is available using the help function
+```{r}
+?denovolyze
+```
+
+
+#BASIC PROTOCOL 1
+##BASIC PROTOCOL TITLE
+Introductory paragraph
+
+###Materials
+Protocol steps  
+Step annotations
+
+#ALTERNATE PROTOCOL 1 (optional)
+##ALTERNATE PROTOCOL TITLE
+Introductory paragraph
+
+###Materials
+Protocol steps  
+Step annotations
+
+#SUPPORT PROTOCOL 1 (optional)
+##SUPPORT PROTOCOL TITLE
+Introductory paragraph
+
+###Materials
+Protocol steps  
+Step annotations
+
+
+
+##REAGENTS AND SOLUTIONS
+
+##COMMENTARY
+####Background Information  
+####Critical Parameters   
+####Troubleshooting  
+####Anticipated Results  
+####Time Considerations  
+
+
+
+##ACKNOWLEDGEMENT (if applicable)
+##LITERATURE CITED
+##KEY REFERENCE (optional)
+##INTERNET RESOURCES (optional)
+
+##FIGURE LEGENDS
+##TABLES
+
+
+
+
+  		___________________________________
+Additional instructions:
+The following should be submitted as individual files, NOT as part of the main document:
+•	Figures
+•	COPYRIGHT PERMISSION (if required)
+•	VIDEOS (optional)
+
+If you have any questions about your manuscript, or formatting, or submitting it, consult the Contributor’s Style Guide (For Authors page) or contact the Developmental Editor listed for your title.
+For questions about our submissions site (ScholarOne Manuscripts), your Contributor Agreement, or copyright permissions, please contact our Editorial Program Coordinator at cpsubmissions@wiley.com. 
