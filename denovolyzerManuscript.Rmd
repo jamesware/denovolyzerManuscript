@@ -82,15 +82,26 @@ denovolyzeByClass(dnm.genes=autismDeNovos$gene,
                   nsamples=1078)
 ```
 
-The output can be modified to display only a subset of variant classes of interest.
+The output can be customized to display only a subset of variant classes of interest
+
 ```{r}
 denovolyzeByClass(dnm.genes=autismDeNovos$gene,
                   dnm.class=autismDeNovos$dnmClass,
                   nsamples=1078,
-                  include.class=c("mis","lof","all"))
+                  include.class=c("mis","lof"))
 ```
 
-There are a number of additional optional arguments. Information on these, and help generally, is available using the help function:
+
+or to display increased granularity.  By default, nonsense, frameshift & splice variants analysed in combination as "lof", but may be analysed separately
+```{r}
+denovolyzeByClass(dnm.genes=autismDeNovos$gene,
+                  dnm.class=autismDeNovos$dnmClass,
+                  nsamples=1078,
+                  include.class=c("frameshift","non","splice","lof"))
+```
+
+
+There are a number of additional optional arguments. Information on these, and help generally, is available using the help function
 ```{r, eval=FALSE}
 help(denovolyzeByClass)
 ```
@@ -298,3 +309,9 @@ list all arguments as an appendix or support protocol?
 
 Get rid of warning (a bug)
 "Warning: joining factors with different levels, coercing to character"
+
+
+```{r}
+head(autismDeNovos)
+```
+
