@@ -29,19 +29,15 @@ opts_chunk$set(cache=T)
 
 ##INTRODUCTION
 
-Spontaneously arising *de novo* genetic variants are important in human disease{ref}.  Each of us carries approximately 100 variants that have not been inherited from our parents{ref}, but rather have arisen via mutational events in the parental germline or early embryo, with a median of 1 *de novo* variant affecting the protein-coding genome{ref}.
+Spontaneously arising—*de novo*—genetic variants are important in human disease. For every individual, there are approximately 100 such variants that arose via mutational events in the parental germline or early embryo, with a median of 1 *de novo* variant affecting the protein-coding portion of genome, referred to as the exome{PMID:21666693;PMID: 20080596}.
 
-Exome sequencing and analysis of *de novo* mutations has successfully identified genes underlying rare and genetically homogeneous Mendelian diseases. In Kabuki sybdrome, *de novo* mutations were identified in *KMT2D* (*MLL2*) in 9 out of 10 unrelated individuals{ref}, an accumulation that would be extremely improbable in the absence of a causal role in the disease, given the *rarity* and independence of *de novo* mutations.
+Exome sequencing and analysis of *de novo* variants has successfully identified genes underlying rare and genetically homogeneous Mendelian diseases. In Kabuki syndrome, nonsynonymous *de novo* variants were identified in KMT2D (MLL2) in 9 out of 10 unrelated individuals{PMID:20711175}. An accumulation of this magnitude would be extremely improbable in the absence of a causal role in the disease given both the rarity and independence of *de novo* variants.
 
-By contrast, it is more challenging to dissect the role of *de novo* mutations in conditions with high levels of locus heterogeneity, including heritable complex traits and some Mendelian conditions, where *de novo* mutations are spread across multiple genes, and may play a smaller role in pathogenesis. Here it may be possible to assess the global contribution of *de novo* coding variants to disease by comparing their frequency in cases and controls, given sufficiently large sample sizes.  However, at the level of individual genes, the interpretation of *de novo* mutations is complicated by the background mutation rate, which varies greatly between genes.  As more individuals are sequenced, it is inevitable that multiple *de novo* mutations will be observed in some genes by chance.
+By contrast, it is more challenging to dissect the role of *de novo* variants in conditions with high levels of locus heterogeneity, including heritable complex traits and some Mendelian conditions, where *de novo* variants are spread across multiple genes, and may play a smaller role in pathogenesis. Here it may be possible to assess the global contribution of *de novo* coding variants to disease by comparing their frequency in cases and controls, given sufficiently large sample sizes. However, at the level of individual genes, the interpretation of *de novo* variants is complicated by the background mutation rate, which varies greatly between genes. Additionally, as more individuals are sequenced, it is inevitable that multiple *de novo* variants will be observed in some genes by chance.
 
-A statistical framework has recently been developed to address these challenges{ref}, that assesses *de novo* single nucleotide variants in coding sequence.  Briefly, the mutability of each gene is individually assessed based on local sequence context, and the probability that a *de novo* event will arise in a single copy of the gene in one generation is calculated.  The consequence of each possible *de novo* SNP is computed, and *de novo* probabilities are tabulated for each variant class.  For a given study population, *de novo* variants can be evaluated by comparing the observed numbers of variants with the number expected based on this model and the population size, using a poisson framework.  This permits the robust evaluation of *de novo* variation in individual genes, and increases the power of genome-wide analyses.
+A statistical framework has recently been developed to address these challenges{PMID:25086666}, which assesses *de novo* single nucleotide variants (SNVs) in coding sequence. Briefly, the mutability of each gene is individually determined based on local sequence context, and the probability that a *de novo* event will arise in a single copy of the gene in one generation is calculated. The consequence of each possible *de novo* SNV is computed, and *de novo* probabilities are tabulated for each variant class. In order to more fully assess loss-of-function (LoF or lof) variation, the probability of a frameshifting insertion or deletion was estimated for all genes. For a given study population, *de novo* variants can be evaluated by comparing the observed numbers of variants with the number expected based on this model and the population size, using a poisson framework. This permits the robust evaluation of *de novo* variation in individual genes, and increases the power of genome-wide analyses.
 
-In this unit, we describe the application of this statistical framework to analyze *de novo* variants using denovolyzeR {url?}, an open-source software package written for the R statistical software environment{ref}.  We present protocols for four analyses, to assess
-(i) whether there is a genome-wide excess of *de novo* variation for different functional classes of variant,
-(ii) whether there is a genome-wide excess of genes with multiple *de novo* mutations
-(iii) whether individual genes carry an excess of *de novo* variants
-(iv) whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. 
+In this unit, we describe the application of this statistical framework to analyze *de novo* variants using denovolyzeR {url?}, an open-source software package written for the R statistical software environment{ref}. We present protocols for four analyses: to assess (i) whether there is a genome-wide excess of *de novo* variation for different functional classes of variant, (ii) whether there is a genome-wide excess of genes with multiple *de novo* variants, (iii) whether individual genes carry an excess of *de novo* variants, and (iv) whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. 
 
 
 #BASIC PROTOCOL 1
@@ -73,7 +69,7 @@ dim(autismDeNovos); head(autismDeNovos)
 
 The `denovolyzeByClass` function will perform the required analysis.  The function has three required arguments:  
 
--  `dnm.genes`: a vector of names of genes that contain *de novo* mutations
+-  `dnm.genes`: a vector of names of genes that contain *de novo* variants
 -  `dnm.classes`: a vector of variant consequences (corresponding to the gene list)
 -  `nsamples`: the total number of samples  analysed (including samples without *de novo* variants).  For the example data, 1078 individuals were sequenced.
 ```{r}
@@ -108,8 +104,8 @@ help(denovolyzeByClass)
 
 
 #BASIC PROTOCOL 2
-##Assessing the number of genes with multiple *de novo* mutations
-The occurence of multiple *de novo* events in a single gene, in a cohort of individuals with a common phenotype, may implicate that gene in the pathogenesis of the condition under study.  Before evaluating single genes, it is instructive to assess the total number of genes harboring multiple *de novo* mutations.  Here, the number of genes containing multiple *de novo* variants is compared with an empirical distribution derived by permutation.
+##Assessing the number of genes with multiple *de novo* variants
+The occurence of multiple *de novo* events in a single gene, in a cohort of individuals with a common phenotype, may implicate that gene in the pathogenesis of the condition under study.  Before evaluating single genes, it is instructive to assess the total number of genes harboring multiple *de novo* variants.  Here, the number of genes containing multiple *de novo* variants is compared with an empirical distribution derived by permutation.
 
 ###Materials
 As for protocol 1:
@@ -120,7 +116,7 @@ library(denovolyzeR)
 ```
 
 2) The `denovolyzeMultiHits` function will perform the required analysis.  
-The same three arguments are required as for BASIC PROTOCOL 1: `dnm.genes` (vector of names of genes containing *de novo* mutations), `dnm.classes` (a vector of variant consequences) and `nsamples` (number of samples).  In addition, `nperms` determinines the number of permutations run (defaults to 100).
+The same three arguments are required as for BASIC PROTOCOL 1: `dnm.genes` (vector of names of genes containing *de novo* variants), `dnm.classes` (a vector of variant consequences) and `nsamples` (number of samples).  In addition, `nperms` determinines the number of permutations run (defaults to 100).
 
 ```{r}
 denovolyzeMultiHits(dnm.genes=autismDeNovos$gene,
@@ -159,7 +155,7 @@ denovolyzeMultiHits(dnm.genes=autismDeNovos$gene,
 
 
 #BASIC PROTOCOL 3
-##Assessing the frequency of *de novo* mutations in individual genes
+##Assessing the frequency of *de novo* variants in individual genes
 In the previous protocol, we assessed whether there were more genes containing multiple *de novo* variants than expected by chance.  In the example data we noted 6 genes with multiple loss-of-function hits. In this next protocol, we will determine whether any individual genes carry an excess of *de novo* variants, using the `denovolyzeByGene` function.
 
 ###Materials
@@ -170,7 +166,7 @@ As for protocol 1:
 library(denovolyzeR)
 ```
 
-2) Call the `denovolyzeByGene` function.The same three arguments are required as for the previous protocols: `dnm.genes` (vector of names of genes containing *de novo* mutations), `dnm.classes` (a vector of variant consequences) and `nsamples` (number of samples).
+2) Call the `denovolyzeByGene` function.The same three arguments are required as for the previous protocols: `dnm.genes` (vector of names of genes containing *de novo* variants), `dnm.classes` (a vector of variant consequences) and `nsamples` (number of samples).
 This function will return one row per gene, ordered according the significance of any enrichment in *de novo* variants.  Given the size of the data, we will only view the first few lines here, using the `head` function
 
 ###[NB - change function output to only return results for genes with at least 1 de novo?]
