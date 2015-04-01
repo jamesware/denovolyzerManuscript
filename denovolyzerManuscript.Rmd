@@ -51,19 +51,23 @@ dplyr and reshape packages.  These dependencies may be installed automatically w
 ```{r, eval=FALSE}
 install.packages("dplyr","reshape")
 ```
+
 A table of *de novo* variants.  The minimum input comprises two columns of data: gene names, and variant classes (functional consequence of each variant).  
-Example data is included in the denovolyzeR package, and will be used in this protocol. The dataset comprises a `data.frame` of *de novo* variants identified in 1078 individuals with autism{PMID:25086666}, named `autismDeNovos`.
+Example data is included in the denovolyzeR package, and will be used in this protocol. The dataset comprises a `data.frame` of *de novo* variants identified in 1078 individuals with autism{PMID:25086666}, named `autismDeNovos`.  
 It is assumed that readers are able to import their own data into the R environment, using the `read.table` function or equivalent (in R, `?read.table` will provide help).  
 
 1) In R, load the denovolyzeR package.
 ```{r, message=FALSE, warning=FALSE}
 library(denovolyzeR)
 ```
+
 2) (Optional) View the demonstration data provided with the denovolyzeR package.  Alternatively, users may import their own data in an equivalent format.
 ```{r}
 dim(autismDeNovos); head(autismDeNovos)
 ```
-####[ insert list of acceptable classes here]
+
+denovolyzeR understands the following variant classes:
+
 
 3) Evaluate the burden.
 
@@ -86,7 +90,6 @@ denovolyzeByClass(dnm.genes=autismDeNovos$gene,
                   nsamples=1078,
                   include.class=c("mis","lof"))
 ```
-
 
 or to display increased granularity.  By default, nonsense, frameshift & splice variants analysed in combination as "lof", but may be analysed separately
 ```{r}
@@ -288,14 +291,27 @@ For questions about our submissions site (ScholarOne Manuscripts), your Contribu
 
 -----
 
-#NOTES TO SELF
+#TO DO LIST
 
+J - 
+write demo for alternate prob table
+viewProbabilityTables()
+refine use of rename package???
 Will need to define abbreviations (lof etc) somewhere
+Get rid of warning (a bug) - DONE
+use de novos  broken by class 0 DONE
 
-Should I describe other aspects:
+K - 
+de novos broken down by class - DONE
+alt prob table - DONE
+Kaitlin first pass references
+first pass ackground
 
-- viewProbabilityTables()
-- custom probability tables (need to put some on github if so)
+Either -
+resolve gene ID mismatches
+
+
+## Other notes to self
 
 list all arguments as an appendix or support protocol?
 
@@ -303,11 +319,8 @@ list all arguments as an appendix or support protocol?
 - signif.p
 - round.expected
 
-Get rid of warning (a bug)
-"Warning: joining factors with different levels, coercing to character"
-
 
 ```{r}
-head(autismDeNovos)
+probabilityTable <- viewDeNovoProbs()
+nrow(probabilityTable); head(probabilityTable)
 ```
-
