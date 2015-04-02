@@ -73,30 +73,30 @@ denovolyzeR understands the following variant classes:
 
 The `denovolyzeByClass` function will perform the required analysis.  The function has three required arguments:  
 
--  `dnm.genes`: a vector of names of genes that contain *de novo* variants
--  `dnm.classes`: a vector of variant consequences (corresponding to the gene list)
+-  `genes`: a vector of names of genes that contain *de novo* variants
+-  `classes`: a vector of variant consequences (corresponding to the gene list)
 -  `nsamples`: the total number of samples  analysed (including samples without *de novo* variants).  For the example data, 1078 individuals were sequenced.
 ```{r}
-denovolyzeByClass(dnm.genes=autismDeNovos$gene,
-                  dnm.class=autismDeNovos$dnmClass,
+denovolyzeByClass(genes=autismDeNovos$gene,
+                  classes=autismDeNovos$class,
                   nsamples=1078)
 ```
 
 The output can be customized to display only a subset of variant classes of interest
 
 ```{r}
-denovolyzeByClass(dnm.genes=autismDeNovos$gene,
-                  dnm.class=autismDeNovos$dnmClass,
+denovolyzeByClass(genes=autismDeNovos$gene,
+                  classes=autismDeNovos$class,
                   nsamples=1078,
-                  include.class=c("mis","lof"))
+                  includeClasses=c("mis","lof"))
 ```
 
 or to display increased granularity.  By default, nonsense, frameshift & splice variants analysed in combination as "lof", but may be analysed separately
 ```{r}
-denovolyzeByClass(dnm.genes=autismDeNovos$gene,
-                  dnm.class=autismDeNovos$dnmClass,
+denovolyzeByClass(genes=autismDeNovos$gene,
+                  classes=autismDeNovos$class,
                   nsamples=1078,
-                  include.class=c("frameshift","non","splice","lof"))
+                  includeClasses=c("frameshift","non","splice","lof"))
 ```
 
 
@@ -119,40 +119,40 @@ library(denovolyzeR)
 ```
 
 2) The `denovolyzeMultiHits` function will perform the required analysis.  
-The same three arguments are required as for BASIC PROTOCOL 1: `dnm.genes` (vector of names of genes containing *de novo* variants), `dnm.classes` (a vector of variant consequences) and `nsamples` (number of samples).  In addition, `nperms` determinines the number of permutations run (defaults to 100).
+The same three arguments are required as for BASIC PROTOCOL 1: `genes` (vector of names of genes containing *de novo* variants), `classes` (a vector of variant consequences) and `nsamples` (number of samples).  In addition, `nperms` determinines the number of permutations run (defaults to 100).
 
 ```{r}
-denovolyzeMultiHits(dnm.genes=autismDeNovos$gene,
-                    dnm.classes=autismDeNovos$dnmClass,
+denovolyzeMultiHits(genes=autismDeNovos$gene,
+                    classes=autismDeNovos$class,
                     nsamples=1078,
                     nperms=100)
 ```
 For each variant class, the function returns the observed number of variants containing multiple *de novo* variants in the user data provided, the average number of genes containing multiple hits across `nperms` permutations, the maximum number of genes containing multiple hits in any permutation, and an empirical p value.  In this case the empirical p value is returned as 0, indicating < 1/nperms (in this case <0.01).  We can obtain a better estimate by increasing the number of permutations. Note that the exact numbers may change slightly between runs of `denovolyzeMultiHits` due to stochastic changes. The larger the number used for `nperms`, the smaller the change in numbers.
 ```{r}
-denovolyzeMultiHits(dnm.genes=autismDeNovos$gene,
-                    dnm.classes=autismDeNovos$dnmClass,
+denovolyzeMultiHits(genes=autismDeNovos$gene,
+                    classes=autismDeNovos$class,
                     nsamples=1078,
                     nperms=5000,
-                    include.class="prot")
+                    includeClasses="prot")
 ```
 Finally it reports that total number of *de novo* of a given class, which is the number used as input to the permutation.
 
 3) Another important option is to vary the expected number of *de novo* variants. The expected number of genes containing >1 hit is obtained by permutation: given n de novo variants, how many genes contain >1 de novo? There are two options for selecting n: by deriving the number from your data (default) or by using the expected number as determined by the model. In the example above autismDeNovos contains
-`r sum(denovolyzeR::autismDeNovos$dnmClass %in% c("frameshift","non","splice"))`
+`r sum(denovolyzeR::autismDeNovos$class %in% c("frameshift","non","splice"))`
 lof variants, so by default this is the number used in the permutation:
 ```{r}
-sum(autismDeNovos$dnmClass %in% c("frameshift","non","splice"))
-denovolyzeMultiHits(dnm.genes=autismDeNovos$gene,
-                    dnm.classes=autismDeNovos$dnmClass,
+sum(autismDeNovos$class %in% c("frameshift","non","splice"))
+denovolyzeMultiHits(genes=autismDeNovos$gene,
+                    classes=autismDeNovos$class,
                     nsamples=1078,
-                    include.class="lof")
+                    includeClasses="lof")
 ```
 The expected number of *de novo* variants is controlled by the `expectedDNMs` arguement, whose default value is "actual".  This is a conservative approach, addressing the question: “given the number of variants in our dataset, do we see more genes with >1 variant than expected?”  An alternative approach simply asks whether there are more genes with >1 variant than our *de novo* model predicts. This is accessed by setting `expectedDNMs="expected"`.
 ```{r}
-denovolyzeMultiHits(dnm.genes=autismDeNovos$gene,
-                    dnm.classes=autismDeNovos$dnmClass,
+denovolyzeMultiHits(genes=autismDeNovos$gene,
+                    classes=autismDeNovos$class,
                     nsamples=1078,
-                    include.class="lof",
+                    includeClasses="lof",
                     expectedDNMs="expected")
 ```
 
@@ -169,27 +169,27 @@ As for protocol 1:
 library(denovolyzeR)
 ```
 
-2) Call the `denovolyzeByGene` function.The same three arguments are required as for the previous protocols: `dnm.genes` (vector of names of genes containing *de novo* variants), `dnm.classes` (a vector of variant consequences) and `nsamples` (number of samples).
+2) Call the `denovolyzeByGene` function.The same three arguments are required as for the previous protocols: `genes` (vector of names of genes containing *de novo* variants), `classes` (a vector of variant consequences) and `nsamples` (number of samples).
 This function will return one row per gene, ordered according the significance of any enrichment in *de novo* variants.  Given the size of the data, we will only view the first few lines here, using the `head` function
 
 ###[NB - change function output to only return results for genes with at least 1 de novo?]
 ```{r}
 head(
-denovolyzeByGene(dnm.genes=autismDeNovos$gene,
-                 dnm.classes=autismDeNovos$dnmClass,
+denovolyzeByGene(genes=autismDeNovos$gene,
+                 classes=autismDeNovos$class,
                  nsamples=1078)
 )
 ```
 
 The p-values returned are not corrected for multiple testing. These default options apply two tests across 18,271 genes, so a Bonferroni corrected p-value threshold at α = 0.05 would be 1.4 × 10^-6^.
 
-By default this function compares the number of LoF variants against expectation for each gene, and then the total number of protein-altering variants (LoF + missense). It can also be configured to return other classes if relevant, using the `include.class` argument.
+By default this function compares the number of LoF variants against expectation for each gene, and then the total number of protein-altering variants (LoF + missense). It can also be configured to return other classes if relevant, using the `includeClasses` argument.
 ```{r}
 head(
-denovolyzeByGene(dnm.genes=autismDeNovos$gene,
-                 dnm.classes=autismDeNovos$dnmClass,
+denovolyzeByGene(genes=autismDeNovos$gene,
+                 classes=autismDeNovos$class,
                  nsamples=1078,
-                 include.class="syn")
+                 includeClasses="syn")
 )
 ```
 
@@ -198,7 +198,7 @@ denovolyzeByGene(dnm.genes=autismDeNovos$gene,
 
 #BASIC PROTOCOL 4
 ##Assessing a pre-specified geneset
-This protocol assesses whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. Note that any of the previous analyses can be restricted to a pre-specified geneset in the same way, using the `include.gene` argument. This may be appropriate if a smaller panel of genes have been sequenced (rather than whole exome sequencing), or to explore biologically relevant genesets.
+This protocol assesses whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. Note that any of the previous analyses can be restricted to a pre-specified geneset in the same way, using the `includeGenes` argument. This may be appropriate if a smaller panel of genes have been sequenced (rather than whole exome sequencing), or to explore biologically relevant genesets.
 
 ###Materials
 As for protocol 1:
@@ -213,12 +213,12 @@ library(denovolyzeR)
 length(FMRPgenes);head(FMRPgenes)
 ```
 
-3) Evaluate the frequency of *de novo* events in our pre-specified genelist, using the `denovolyzeByClass` function.  Specify the genelist using the `include.gene` argument, which defaults to "all", but accepts a vector of genes.
+3) Evaluate the frequency of *de novo* events in our pre-specified genelist, using the `denovolyzeByClass` function.  Specify the genelist using the `includeGenes` argument, which defaults to "all", but accepts a vector of genes.
 ```{r}
-denovolyzeByClass(dnm.genes=autismDeNovos$gene,
-                  dnm.class=autismDeNovos$dnmClass,
+denovolyzeByClass(genes=autismDeNovos$gene,
+                  classes=autismDeNovos$class,
                   nsamples=1078,
-                  include.gene=FMRPgenes)
+                  includeGenes=FMRPgenes)
 ```
 In this example we see a highly significant enrichment of *de novo* lof variants in genes that interact with FMRP in our cohort of autism cases. These results depend on similar gene annotations for the geneset and list of de novo variants. For example, if the de novo list contains KMT2D (previously known as MLL2) but the geneset lists MLL2, these will not be matched.
 
@@ -249,9 +249,9 @@ Leave blank
 ####Time Considerations  
 These analyses are not especially computationally intensive, and will run on a desktop of laptop computer in seconds.  The `denovolyzeMultiHits` function uses permutation, and computation time increases linearly with the number of permutations.  Elapsed times (in seconds) to run the three principal functions on *de novo* variants from 1078 samples, using defaut settings, on a MacBook Air (1.7GHz i7, 8Gb RAM) are as follows:
 ```{r}
-system.time(denovolyzeByClass(dnm.genes=autismDeNovos$gene,dnm.class=autismDeNovos$dnmClass,nsamples=1078))["elapsed"]
-system.time(denovolyzeMultiHits(dnm.genes=autismDeNovos$gene,dnm.class=autismDeNovos$dnmClass,nsamples=1078,nperms=1000))["elapsed"]
-system.time(denovolyzeByGene(dnm.genes=autismDeNovos$gene,dnm.class=autismDeNovos$dnmClass,nsamples=1078))["elapsed"]
+system.time(denovolyzeByClass(genes=autismDeNovos$gene,classes=autismDeNovos$class,nsamples=1078))["elapsed"]
+system.time(denovolyzeMultiHits(genes=autismDeNovos$gene,classes=autismDeNovos$class,nsamples=1078,nperms=1000))["elapsed"]
+system.time(denovolyzeByGene(genes=autismDeNovos$gene,classes=autismDeNovos$class,nsamples=1078))["elapsed"]
 ```
 
 
