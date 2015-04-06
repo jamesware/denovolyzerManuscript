@@ -232,9 +232,19 @@ _____
 ##COMMENTARY
 
 ####Background Information  
-We need to put something here.
-Could put some more info on the model here, with maybe a figure?
-Or the underlying poisson stats?
+The mutational model was previously described in greater detail in Samocha et al{PMID:25086666}. Briefly, it is based on determining the probability of each base in the coding sequence of the human genome mutating to the other possible bases. The predicted impact of these changes is aggregated across the gene to establish the probability of specific types of mutation (synonymous, missense, etc).
+
+Previous work established that the mutability of a base can be sufficiently modeled by accounting for the local sequence context of one nucleotide on either side of the base of interest{PMID: 9683596}{PMID: 17357078}. We therefore use this context for intergenic single nucleotide polymorphisms (SNPs) from the 1000 Genomes project to create a mutation rate table, which provides the relative probabilities of each possible trinucleotide (XY1Z) to trinucleotide (XY2Z) change.
+
+We then consider each base in the coding sequence and use the mutation rate table to determine its probability of mutating to the other bases. We predict the impact of the mutation on the protein product and aggregate the probabilities by mutation type across each gene. These per-gene probabilities are then adjusted for how well sequenced the gene was and regional divergence between humans and macaques.
+
+Given that the number of de novo variants per trio follows a Poisson distribution{PMID:22495311}, we use the Poisson distribution to evaluate the excesses of de novo events. As an example, to determine if a particular gene has more de novo loss-of-function variants than expected, we multiply that gene’s probability of a loss-of-function mutation by the number of trios and by 2 (for the number of chromosomes) in the study. The resulting number is used as the expectation (lambda value) to which the observed number of de novo loss-of-function variants. Specifically, the `ppois` command in R is used. The three de novo loss-of-function variants seen in DYRK1A are used in the example below. Note that, given the way that `ppois` works, one is subtracted from the observed number when expectation is lower than observation.
+```{r}
+n_lof_dyrk1a <- 3
+prob_lof_dyrk1a <- 2.52829677579e-06
+n_trios <- 1078
+ppois(n_lof_dyrk1a-1, prob_lof_dyrk1a*n_trios*2, lower=FALSE)
+```
 
 ####Critical Parameters   
 expectedDNMs
