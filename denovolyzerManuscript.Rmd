@@ -36,7 +36,7 @@ By contrast, it is more challenging to dissect the role of *de novo* variants in
 
 A statistical framework has recently been developed to address these challenges{PMID:25086666}, which assesses *de novo* single nucleotide variants (SNVs) in coding sequence. Briefly, the mutability of each gene is individually determined based on local sequence context, and the probability that a *de novo* event will arise in a single copy of the gene in one generation is calculated. The consequence of each possible *de novo* SNV is computed, and *de novo* probabilities are tabulated for each variant class. In order to more fully assess loss-of-function (LoF or lof) variation, the probability of a frameshifting insertion or deletion was estimated for all genes. For a given study population, *de novo* variants can be evaluated by comparing the observed numbers of variants with the number expected based on this model and the population size, using a poisson framework. This permits the robust evaluation of *de novo* variation in individual genes, and increases the power of genome-wide analyses.
 
-In this unit, we describe the application of this statistical framework to analyze *de novo* variants using denovolyzeR {url?}, an open-source software package written for the R statistical software environment{ref}. We present protocols for four analyses: to assess (i) whether there is a genome-wide excess of *de novo* variation for different functional classes of variant, (ii) whether there is a genome-wide excess of genes with multiple *de novo* variants, (iii) whether individual genes carry an excess of *de novo* variants, and (iv) whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. 
+In this unit, we describe the application of this statistical framework to analyze *de novo* variants using **denovolyzeR** {url?}, an open-source software package written for the R statistical software environment{ref}. We present protocols for four analyses: to assess (i) whether there is a genome-wide excess of *de novo* variation for different functional classes of variant, (ii) whether there is a genome-wide excess of genes with multiple *de novo* variants, (iii) whether individual genes carry an excess of *de novo* variants, and (iv) whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. 
 
 
 #BASIC PROTOCOL 1
@@ -45,32 +45,37 @@ This protocol will assess whether there is a genome-wide excess of *de novo* var
 
 ###Materials
 A computer running the R software environment, available for UNIX platforms, Windows and MacOS from http://www.r-project.org.  
-The denovolyzeR package - download and installation options are described at http://denovolyzer.org  
-dplyr and reshape packages.  These dependencies may be installed automatically when denovolyzeR is installed (depending on your installation route). Otherwise they can be installed by running:
+The **denovolyzeR** package - download and installation options are described at http://denovolyzer.org  
+dplyr and reshape packages.  These dependencies may be installed automatically when **denovolyzeR** is installed (depending on your installation route). Otherwise they can be installed by running:
 ```{r, eval=FALSE}
 install.packages("dplyr","reshape")
 ```
 
 A table of *de novo* variants.  The minimum input comprises two columns of data: gene names, and variant classes (functional consequence of each variant).  
-Example data is included in the denovolyzeR package, and will be used in this protocol. The dataset comprises a `data.frame` of *de novo* variants identified in 1078 individuals with autism{PMID:25086666}, named `autismDeNovos`.  
+Example data is included in the **denovolyzeR** package, and will be used in this protocol. The dataset comprises a `data.frame` of *de novo* variants identified in 1078 individuals with autism{PMID:25086666}, named `autismDeNovos`.  
 It is assumed that readers are able to import their own data into the R environment, using the `read.table` function or equivalent (in R, `?read.table` will provide help).  
 
-1) In R, load the denovolyzeR package.
+1) In R, load the **denovolyzeR** package.
 ```{r, message=FALSE, warning=FALSE}
 library(denovolyzeR)
 ```
 
-2) (Optional) View the demonstration data provided with the denovolyzeR package.  Alternatively, users may import their own data in an equivalent format.
+2) Prepare input data 
+Demonstration data provided with the **denovolyzeR** package.  Alternatively, users may import their own data in an equivalent format.
 ```{r}
 dim(autismDeNovos); head(autismDeNovos)
 ```
 
-The variant classes must be labelled using the following terms:  
+Variant classes must be labelled using the following terms:  
 "syn" (synonymous), "mis" (missense), "non" (nonsense), "splice" (canonical splice site), "frameshift", "lof" (used collectively term for "non + splice + frameshift").
 The user can decide whether to annotate nonsense, splice and frameshift separately, or to use the label lof for all.
 Whatever input format is chosen, summary statistics can be produced for "lof", "prot" (protein-altering = mis + lof), and "all".  "prot" and "all" are not valid input classes.
 
-**TO INSERT - Gene Names usage & identifiers**
+```{r, include=F}
+geneIdentifiers <- names(dplyr::select(denovolyzeR:::pDNM,-class,-value))
+```
+
+A number of gene identifiers may be used.  Valid identifiers recognised by the software include:`r geneIdentifiers`.  **denovolyzeR** interprets gene identifiers as HGNC symbols by default.  
 
 3) Evaluate the burden.
 
@@ -79,12 +84,22 @@ The `denovolyzeByClass` function will perform the required analysis.  The functi
 -  `genes`: a vector of gene identifiers, for genes that contain *de novo* variants
 -  `classes`: a vector of variant consequences (corresponding to the gene list)
 -  `nsamples`: the total number of samples  analysed (including samples without *de novo* variants).  For the example data, 1078 individuals were sequenced.
+
+In this case we also need to specify the geneId that we have used.
+```{r}
+denovolyzeByClass(genes=autismDeNovos$gene,
+                  classes=autismDeNovos$class,
+                  nsamples=1078)
+```
+
+Note that we receive a warning that our input data contains some gene identifiers that are not recognised by **denovolyzeR**.  These are interpreted as HGNC ID. The demonstration data were annotated using the Ensembl Variant Effect Predictor{ref}, which provides alternative IDs (e.g. from UniProtKB) when HGNC identifiers are not available - these are listed as "geneName". By specifying that we are using "geneName" as our identifier, with the `geneId` argument, we can include these genes that do not have an HGNC ID in our analysis.
 ```{r}
 denovolyzeByClass(genes=autismDeNovos$gene,
                   classes=autismDeNovos$class,
                   nsamples=1078,
                   geneId="geneName")
 ```
+
 
 The output can be customized to display only a subset of variant classes of interest
 
@@ -120,7 +135,7 @@ The occurence of multiple *de novo* events in a single gene, in a cohort of indi
 As for protocol 1.
 
 
-1) Ensure the denovolyzeR library and data for analysis are loaded.
+1) Ensure the **denovolyzeR** library and data for analysis are loaded.
 ```{r}
 library(denovolyzeR)
 ```
@@ -175,7 +190,7 @@ In the previous protocol, we assessed whether there were more genes containing m
 ###Materials
 As for protocol 1:
 
-1) Ensure the denovolyzeR library and data for analysis are loaded.
+1) Ensure the **denovolyzeR** library and data for analysis are loaded.
 ```{r}
 library(denovolyzeR)
 ```
@@ -216,12 +231,12 @@ This protocol assesses whether a pre-specified set of genes collectively shows a
 ###Materials
 As for protocol 1:
 
-1) In R, load the denovolyzeR package.
+1) In R, load the **denovolyzeR** package.
 ```{r, message=FALSE, warning=FALSE}
 library(denovolyzeR)
 ```
 
-2) Define a geneset. This should be a vector of genes, which may be entered by hand, or read from file using `read.table` or equivalent.  In this example, we use an example geneset included with the denovolyzeR package, a list of `r length(denovolyzeR::FMRPgenes)` genes that interact with the fragile X mental retardation protein (FMRP) taken from Darnell et al{PMID:21784246}.
+2) Define a geneset. This should be a vector of genes, which may be entered by hand, or read from file using `read.table` or equivalent.  In this example, we use an example geneset included with the **denovolyzeR** package, a list of `r length(denovolyzeR::FMRPgenes)` genes that interact with the fragile X mental retardation protein (FMRP) taken from Darnell et al{PMID:21784246}.
 ```{r}
 length(FMRPgenes);head(FMRPgenes)
 ```
