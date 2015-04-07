@@ -66,7 +66,10 @@ library(denovolyzeR)
 dim(autismDeNovos); head(autismDeNovos)
 ```
 
-denovolyzeR understands the following variant classes:
+The variant classes must be labelled using the following terms:  
+"syn" (synonymous), "mis" (missense), "non" (nonsense), "splice" (canonical splice site), "frameshift", "lof" (used collectively term for "non + splice + frameshift").
+The user can decide whether to annotate nonsense, splice and frameshift separately, or to use the label lof for all.
+Whatever input format is chosen, summary statistics can be produced for "lof", "prot" (protein-altering = mis + lof), and "all".  "prot" and "all" are not valid input classes.
 
 
 3) Evaluate the burden.
@@ -315,9 +318,9 @@ resolve gene ID mismatches
 
 list all arguments as an appendix or support protocol?
 
-- gene.id
-- signif.p
-- round.expected
+- geneId
+- signifP
+- roundExpected
 
 
 ```{r}
