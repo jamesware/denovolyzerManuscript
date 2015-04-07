@@ -2,13 +2,12 @@
 title: "Interpreting *de novo* variation in human disease using **denovolyzeR**"
 author: "Authors: James S. Ware^1-4^, Kaitlin E. Samocha^1-3^, Mark J. Daly^1-3^"
 output:
-  word_document:
-    reference_docx: template.docx
+word_document:
+reference_docx: template.docx
 ---
 
 Title ideas:  
 A statistical aproach to assess the frequency of *de novo* variation  
-Interpreting *de novo* variation in human disease using **denovolyzeR**  
 Interpreting *de novo* variation in human disease: a model-based approach  
 
 Contact information  
@@ -29,7 +28,7 @@ opts_chunk$set(cache=T)
 
 ##INTRODUCTION
 
-Spontaneously arising—*de novo*—genetic variants are important in human disease. For every individual, there are approximately 100 such variants that arose via mutational events in the parental germline or early embryo, with a median of 1 *de novo* variant affecting the protein-coding portion of genome, referred to as the exome{PMID:21666693;PMID: 20080596}.
+Spontaneously arising—*de novo*—genetic variants are important in human disease. For every individual, there are approximately 100 such variants that have arisen via mutational events in the parental germline or early embryo, with a median of 1 *de novo* variant affecting the protein-coding portion of genome, referred to as the exome{PMID:21666693;PMID: 20080596}.
 
 Exome sequencing and analysis of *de novo* variants has successfully identified genes underlying rare and genetically homogeneous Mendelian diseases. In Kabuki syndrome, nonsynonymous *de novo* variants were identified in KMT2D (MLL2) in 9 out of 10 unrelated individuals{PMID:20711175}. An accumulation of this magnitude would be extremely improbable in the absence of a causal role in the disease given both the rarity and independence of *de novo* variants.
 
@@ -71,18 +70,20 @@ The variant classes must be labelled using the following terms:
 The user can decide whether to annotate nonsense, splice and frameshift separately, or to use the label lof for all.
 Whatever input format is chosen, summary statistics can be produced for "lof", "prot" (protein-altering = mis + lof), and "all".  "prot" and "all" are not valid input classes.
 
+**TO INSERT - Gene Names usage & identifiers**
 
 3) Evaluate the burden.
 
 The `denovolyzeByClass` function will perform the required analysis.  The function has three required arguments:  
 
--  `genes`: a vector of names of genes that contain *de novo* variants
+-  `genes`: a vector of gene identifiers, for genes that contain *de novo* variants
 -  `classes`: a vector of variant consequences (corresponding to the gene list)
 -  `nsamples`: the total number of samples  analysed (including samples without *de novo* variants).  For the example data, 1078 individuals were sequenced.
 ```{r}
 denovolyzeByClass(genes=autismDeNovos$gene,
                   classes=autismDeNovos$class,
-                  nsamples=1078)
+                  nsamples=1078,
+                  geneId="geneName")
 ```
 
 The output can be customized to display only a subset of variant classes of interest
@@ -91,7 +92,8 @@ The output can be customized to display only a subset of variant classes of inte
 denovolyzeByClass(genes=autismDeNovos$gene,
                   classes=autismDeNovos$class,
                   nsamples=1078,
-                  includeClasses=c("mis","lof"))
+                  includeClasses=c("mis","lof"),
+                  geneId="geneName")
 ```
 
 or to display increased granularity.  By default, nonsense, frameshift & splice variants analysed in combination as "lof", but may be analysed separately
@@ -99,7 +101,8 @@ or to display increased granularity.  By default, nonsense, frameshift & splice 
 denovolyzeByClass(genes=autismDeNovos$gene,
                   classes=autismDeNovos$class,
                   nsamples=1078,
-                  includeClasses=c("frameshift","non","splice","lof"))
+                  includeClasses=c("frameshift","non","splice","lof"),
+                  geneId="geneName")
 ```
 
 
@@ -114,7 +117,8 @@ help(denovolyzeByClass)
 The occurence of multiple *de novo* events in a single gene, in a cohort of individuals with a common phenotype, may implicate that gene in the pathogenesis of the condition under study.  Before evaluating single genes, it is instructive to assess the total number of genes harboring multiple *de novo* variants.  Here, the number of genes containing multiple *de novo* variants is compared with an empirical distribution derived by permutation.
 
 ###Materials
-As for protocol 1:
+As for protocol 1.
+
 
 1) Ensure the denovolyzeR library and data for analysis are loaded.
 ```{r}
@@ -122,13 +126,14 @@ library(denovolyzeR)
 ```
 
 2) The `denovolyzeMultiHits` function will perform the required analysis.  
-The same three arguments are required as for BASIC PROTOCOL 1: `genes` (vector of names of genes containing *de novo* variants), `classes` (a vector of variant consequences) and `nsamples` (number of samples).  In addition, `nperms` determinines the number of permutations run (defaults to 100).
+The same three arguments are required as for BASIC PROTOCOL 1: `genes` (vector of genes containing *de novo* variants), `classes` (a vector of variant consequences) and `nsamples` (number of samples).  In addition, `nperms` determinines the number of permutations run (defaults to 100).
 
 ```{r}
 denovolyzeMultiHits(genes=autismDeNovos$gene,
                     classes=autismDeNovos$class,
                     nsamples=1078,
-                    nperms=100)
+                    nperms=100,
+                    geneId="geneName")
 ```
 For each variant class, the function returns the observed number of variants containing multiple *de novo* variants in the user data provided, the average number of genes containing multiple hits across `nperms` permutations, the maximum number of genes containing multiple hits in any permutation, and an empirical p value.  In this case the empirical p value is returned as 0, indicating < 1/nperms (in this case <0.01).  We can obtain a better estimate by increasing the number of permutations. Note that the exact numbers may change slightly between runs of `denovolyzeMultiHits` due to stochastic changes. The larger the number used for `nperms`, the smaller the change in numbers.
 ```{r}
@@ -136,7 +141,8 @@ denovolyzeMultiHits(genes=autismDeNovos$gene,
                     classes=autismDeNovos$class,
                     nsamples=1078,
                     nperms=5000,
-                    includeClasses="prot")
+                    includeClasses="prot",
+                    geneId="geneName")
 ```
 Finally it reports that total number of *de novo* of a given class, which is the number used as input to the permutation.
 
@@ -148,7 +154,8 @@ sum(autismDeNovos$class %in% c("frameshift","non","splice"))
 denovolyzeMultiHits(genes=autismDeNovos$gene,
                     classes=autismDeNovos$class,
                     nsamples=1078,
-                    includeClasses="lof")
+                    includeClasses="lof",
+                    geneId="geneName")
 ```
 The expected number of *de novo* variants is controlled by the `expectedDNMs` arguement, whose default value is "actual".  This is a conservative approach, addressing the question: “given the number of variants in our dataset, do we see more genes with >1 variant than expected?”  An alternative approach simply asks whether there are more genes with >1 variant than our *de novo* model predicts. This is accessed by setting `expectedDNMs="expected"`.
 ```{r}
@@ -156,7 +163,8 @@ denovolyzeMultiHits(genes=autismDeNovos$gene,
                     classes=autismDeNovos$class,
                     nsamples=1078,
                     includeClasses="lof",
-                    expectedDNMs="expected")
+                    expectedDNMs="expected",
+                    geneId="geneName")
 ```
 
 
@@ -178,10 +186,11 @@ This function will return one row per gene, ordered according the significance o
 ###[NB - change function output to only return results for genes with at least 1 de novo?]
 ```{r}
 head(
-denovolyzeByGene(genes=autismDeNovos$gene,
-                 classes=autismDeNovos$class,
-                 nsamples=1078)
-)
+  denovolyzeByGene(genes=autismDeNovos$gene,
+                   classes=autismDeNovos$class,
+                   nsamples=1078,
+                   geneId="geneName")
+  )
 ```
 
 The p-values returned are not corrected for multiple testing. These default options apply two tests across 18,271 genes, so a Bonferroni corrected p-value threshold at α = 0.05 would be 1.4 × 10^-6^.
@@ -189,11 +198,12 @@ The p-values returned are not corrected for multiple testing. These default opti
 By default this function compares the number of LoF variants against expectation for each gene, and then the total number of protein-altering variants (LoF + missense). It can also be configured to return other classes if relevant, using the `includeClasses` argument.
 ```{r}
 head(
-denovolyzeByGene(genes=autismDeNovos$gene,
-                 classes=autismDeNovos$class,
-                 nsamples=1078,
-                 includeClasses="syn")
-)
+  denovolyzeByGene(genes=autismDeNovos$gene,
+                   classes=autismDeNovos$class,
+                   nsamples=1078,
+                   includeClasses="syn",
+                   geneId="geneName")
+  )
 ```
 
 
@@ -221,7 +231,8 @@ length(FMRPgenes);head(FMRPgenes)
 denovolyzeByClass(genes=autismDeNovos$gene,
                   classes=autismDeNovos$class,
                   nsamples=1078,
-                  includeGenes=FMRPgenes)
+                  includeGenes=FMRPgenes,
+                  geneId="geneName")
 ```
 In this example we see a highly significant enrichment of *de novo* lof variants in genes that interact with FMRP in our cohort of autism cases. These results depend on similar gene annotations for the geneset and list of de novo variants. For example, if the de novo list contains KMT2D (previously known as MLL2) but the geneset lists MLL2, these will not be matched.
 
@@ -248,6 +259,16 @@ prob_lof_dyrk1a <- 2.52829677579e-06
 n_trios <- 1078
 ppois(n_lof_dyrk1a-1, prob_lof_dyrk1a*n_trios*2, lower=FALSE)
 ```
+
+denovolyze yields the same result:
+```{r}
+denovolyzeByGene(genes=autismDeNovos$gene,
+                 classes=autismDeNovos$class,
+                 nsamples=1078,
+                 includeGenes="DYRK1A",
+                 geneId="geneName")
+```
+
 
 ####Critical Parameters   
 expectedDNMs
@@ -292,7 +313,7 @@ na
 
 
 _____
-  	
+
 Additional instructions:
 The following should be submitted as individual files, NOT as part of the main document:
 •	Figures
@@ -333,7 +354,12 @@ list all arguments as an appendix or support protocol?
 - roundExpected
 
 
-```{r}
+```{r viewProbabilityTable}
 probabilityTable <- viewDeNovoProbs()
 nrow(probabilityTable); head(probabilityTable)
+```
+
+
+```{r altProbabilityTable}
+
 ```
