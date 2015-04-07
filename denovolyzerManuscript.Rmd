@@ -150,7 +150,7 @@ denovolyzeMultiHits(genes=autismDeNovos$gene,
                     nperms=100,
                     geneId="geneName")
 ```
-For each variant class, the function returns the observed number of variants containing multiple *de novo* variants in the user data provided, the average number of genes containing multiple hits across `nperms` permutations, the maximum number of genes containing multiple hits in any permutation, and an empirical p value.  In this case the empirical p value is returned as 0, indicating < 1/nperms (in this case <0.01).  We can obtain a better estimate by increasing the number of permutations. Note that the exact numbers may change slightly between runs of `denovolyzeMultiHits` due to stochastic changes. The larger the number used for `nperms`, the smaller the change in numbers.
+For each variant class, the function returns the observed number of genes containing multiple *de novo* variants in the user data provided, the average number of genes containing multiple hits across `nperms` permutations, the maximum number of genes containing multiple hits in any permutation, and an empirical p value.  In this case the empirical p value is returned as 0, indicating < 1/nperms (in this case <0.01).  We can obtain a better estimate by increasing the number of permutations. Note that the exact numbers may change slightly between runs of `denovolyzeMultiHits` due to stochastic changes. The larger the number used for `nperms`, the smaller the change in numbers.
 ```{r}
 denovolyzeMultiHits(genes=autismDeNovos$gene,
                     classes=autismDeNovos$class,
@@ -172,7 +172,7 @@ denovolyzeMultiHits(genes=autismDeNovos$gene,
                     includeClasses="lof",
                     geneId="geneName")
 ```
-The expected number of *de novo* variants is controlled by the `expectedDNMs` arguement, whose default value is "actual".  This is a conservative approach, addressing the question: “given the number of variants in our dataset, do we see more genes with >1 variant than expected?”  An alternative approach simply asks whether there are more genes with >1 variant than our *de novo* model predicts. This is accessed by setting `expectedDNMs="expected"`.
+The expected number of *de novo* variants is controlled by the `expectedDNMs` argument, whose default value is "actual".  This is a conservative approach, addressing the question: “given the number of variants in our dataset, do we see more genes with >1 variant than expected?”  An alternative approach simply asks whether there are more genes with >1 variant than our *de novo* model predicts. This is accessed by setting `expectedDNMs="expected"`.
 ```{r}
 denovolyzeMultiHits(genes=autismDeNovos$gene,
                     classes=autismDeNovos$class,
@@ -263,7 +263,7 @@ _____
 ####Background Information  
 The mutational model was previously described in greater detail in Samocha et al{PMID:25086666}. Briefly, it is based on determining the probability of each base in the coding sequence of the human genome mutating to the other possible bases. The predicted impact of these changes is aggregated across the gene to establish the probability of specific types of mutation (synonymous, missense, etc).
 
-Previous work established that the mutability of a base can be sufficiently modeled by accounting for the local sequence context of one nucleotide on either side of the base of interest{PMID: 9683596}{PMID: 17357078}. We therefore use this context for intergenic single nucleotide polymorphisms (SNPs) from the 1000 Genomes project to create a mutation rate table, which provides the relative probabilities of each possible trinucleotide (XY1Z) to trinucleotide (XY2Z) change.
+Previous work established that the mutability of a base can be sufficiently modeled by accounting for the local sequence context of one nucleotide on either side of the base of interest{PMID: 9683596}{PMID: 17357078}. We therefore use this context for intergenic single nucleotide polymorphisms (SNPs) from the 1000 Genomes project to create a mutation rate table, which provides the relative probabilities of each possible trinucleotide (XY^1^Z) to trinucleotide (XY^2^Z) change.
 
 We then consider each base in the coding sequence and use the mutation rate table to determine its probability of mutating to the other bases. We predict the impact of the mutation on the protein product and aggregate the probabilities by mutation type across each gene. These per-gene probabilities are then adjusted for how well sequenced the gene was and regional divergence between humans and macaques.
 
