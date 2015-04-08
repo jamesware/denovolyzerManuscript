@@ -1,12 +1,12 @@
 ---
 title: "Interpreting *de novo* variation in human disease using **denovolyzeR**"
-author: "Authors: James S. Ware^1-4^, Kaitlin E. Samocha^1-3^, Mark J. Daly^1-3^"
+author: "Authors: James S. Ware^1-4^*, Kaitlin E. Samocha^1-3^, Mark J. Daly^1-3^"
 output:
   word_document:
     reference_docx: template.docx
 ---
 
-Title ideas:  
+Alternative title ideas:  
 A statistical aproach to assess the frequency of *de novo* variation  
 Interpreting *de novo* variation in human disease: a model-based approach  
 
@@ -15,7 +15,7 @@ Contact information
 ^2^ Broad Institute of MIT and Harvard, Cambridge MA  
 ^3^ Analytical and Translational Genetics Unit, Massachusetts General Hospital and Harvard Medical School, Boston MA  
 ^4^ NIHR Cardiovascular Biomedical Research Unit at Royal Brompton Hospital and Imperial College London, London UK  
-
+* corresponding author
 
 ###This will be removed from final manuscript, but prevents permutations from re-running every time manuscript is updated during draft phase...
 ```{r}
@@ -24,11 +24,13 @@ opts_chunk$set(cache=T)
 ```
 
 ##ABSTRACT
-###Keywords: de novo, exome sequencing
+Spontaneously arising (*de novo*) genetic variants are important in human disease, yet every individual carries many such variants, with a median of 1 *de novo* variant affecting the protein-coding portion of the genome.  A recently-described mutational model{25086666} provides a powerful framework for the robust statistical evaluation of such variants, enabling the interpretation of *de novo* variation in human disease.  Here we describe a new open-source software package, **denovolyzeR**, that implements this model and provides tools for the analysis of *de novo* sequence variants.
+
+###Keywords: *de novo* variant, exome sequencing
 
 ##INTRODUCTION
 
-Spontaneously arising—*de novo*—genetic variants are important in human disease. Every individual carries approximately 100 such variants that have arisen via mutational events in the parental germline or early embryo, with a median of 1 *de novo* variant affecting the protein-coding portion of genome, referred to as the exome{21666693; 20080596}.
+Spontaneously arising (*de novo*) genetic variants are important in human disease. Every individual carries approximately 100 such variants that have arisen via mutational events in the parental germline or early embryo, with a median of 1 *de novo* variant affecting the protein-coding portion of genome, referred to as the exome{21666693; 20080596}.
 
 Exome sequencing and analysis of *de novo* variants has successfully identified genes underlying rare and genetically homogeneous Mendelian diseases. In Kabuki syndrome, nonsynonymous *de novo* variants were identified in KMT2D (MLL2) in 9 out of 10 unrelated individuals{20711175}. An accumulation of this magnitude would be extremely improbable in the absence of a causal role in the disease given both the rarity and independence of *de novo* variants.
 
@@ -36,7 +38,7 @@ By contrast, it is more challenging to dissect the role of *de novo* variants in
 
 A statistical framework has recently been developed to address these challenges{25086666}, which assesses *de novo* single nucleotide variants (SNVs) in coding sequence. Briefly, the mutability of each gene is individually determined based on local sequence context, and the probability that a *de novo* event will arise in a single copy of the gene in one generation is calculated. The consequence of each possible *de novo* SNV is computed, and *de novo* probabilities are tabulated for each variant class. In order to more fully assess loss-of-function (LoF or lof) variation, the probability of a frameshifting insertion or deletion was estimated for all genes. For a given study population, *de novo* variants can be evaluated by comparing the observed numbers of variants with the number expected based on this model and the population size, using a poisson framework. This permits the robust evaluation of *de novo* variation in individual genes, and increases the power of genome-wide analyses.
 
-In this unit, we describe the application of this statistical framework to analyze *de novo* variants using **denovolyzeR** {url?}, an open-source software package written for the R statistical software environment{R: A Language and Environment for Statistical Computing}. We present protocols for four analyses: to assess (i) whether there is a genome-wide excess of *de novo* variation for different functional classes of variant, (ii) whether there is a genome-wide excess of genes with multiple *de novo* variants, (iii) whether individual genes carry an excess of *de novo* variants, and (iv) whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. 
+In this unit, we describe the application of this statistical framework to analyze *de novo* variants using **denovolyzeR** {http://denovolyzer.org}, an open-source software package written for the `R` statistical software environment{R: A Language and Environment for Statistical Computing}. We present protocols for four analyses: to assess (i) whether there is a genome-wide excess of *de novo* variation for different functional classes of variant, (ii) whether there is a genome-wide excess of genes with multiple *de novo* variants, (iii) whether individual genes carry an excess of *de novo* variants, and (iv) whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. 
 
 
 #BASIC PROTOCOL 1
@@ -44,16 +46,16 @@ In this unit, we describe the application of this statistical framework to analy
 This protocol will assess whether there is a genome-wide excess of *de novo* variation for different functional classes of variant.
 
 ###Materials
-A computer running the R software environment, available for UNIX platforms, Windows and MacOS from http://www.r-project.org.  
+A computer running the `R` software environment, available for UNIX platforms, Windows and MacOS from http://www.r-project.org.  
 The **denovolyzeR** package - download and installation options are described at http://denovolyzer.org  
-dplyr and reshape packages.  These dependencies may be installed automatically when **denovolyzeR** is installed (depending on your installation route). Otherwise they can be installed by running:
+`dplyr` and `reshape` packages.  These dependencies may be installed automatically when **denovolyzeR** is installed (depending on your installation route). Otherwise they can be installed by running:
 ```{r, eval=FALSE}
 install.packages("dplyr","reshape")
 ```
 
 A table of *de novo* variants.  The minimum input comprises two columns of data: gene names, and variant classes (functional consequence of each variant).  
 Example data is included in the **denovolyzeR** package, and will be used in this protocol. The dataset comprises a `data.frame` of *de novo* variants identified in 1078 individuals with autism{25086666}, named `autismDeNovos`.  
-It is assumed that readers are able to import their own data into the R environment, using the `read.table` function or equivalent (in R, `?read.table` will provide help).  
+It is assumed that readers are able to import their own data into the `R` environment, using the `read.table` function or equivalent (in R, `?read.table` will provide help).  
 
 1) In R, load the **denovolyzeR** package.
 ```{r, message=FALSE, warning=FALSE}
@@ -236,7 +238,7 @@ In this example we see a highly significant enrichment of *de novo* lof variants
 
 #SUPPORT PROTOCOL 1
 ##Getting help
-Help on any of the functions described is available using the standard R help functions, e.g. `help(denovolyze)` or `?denovolyze`.  Additional details are also available in the package vignette, accessed using `vignette("denovolyzeR_intro")`.
+Help on any of the functions described is available using the standard `R` help functions, e.g. `help(denovolyze)` or `?denovolyze`.  Additional details are also available in the package vignette, accessed using `vignette("denovolyzeR_intro")`.
 
 _____
 
@@ -249,7 +251,7 @@ Previous work established that the mutability of a base can be sufficiently mode
 
 We then consider each base in the coding sequence and use the mutation rate table to determine its probability of mutating to the other bases. We predict the impact of the mutation on the protein product and aggregate the probabilities by mutation type across each gene. These per-gene probabilities are then adjusted for how well sequenced the gene was and regional divergence between humans and macaques.
 
-Given that the number of de novo variants per trio follows a Poisson distribution{22495311}, we use the Poisson distribution to evaluate the excesses of de novo events. As an example, to determine if a particular gene has more de novo loss-of-function variants than expected, we multiply that gene’s probability of a loss-of-function mutation by the number of trios and by 2 (for the number of chromosomes) in the study. The resulting number is used as the expectation (lambda value) to which the observed number of de novo loss-of-function variants. Specifically, the `ppois` command in R is used. The three de novo loss-of-function variants seen in DYRK1A are used in the example below. With `denovolyze`, we get the following result:
+Given that the number of de novo variants per trio follows a Poisson distribution{22495311}, we use the Poisson distribution to evaluate the excesses of de novo events. As an example, to determine if a particular gene has more de novo loss-of-function variants than expected, we multiply that gene’s probability of a loss-of-function mutation by the number of trios and by 2 (for the number of chromosomes) in the study. The resulting number is used as the expectation (lambda value) to which the observed number of de novo loss-of-function variants. Specifically, the `ppois` command in `R` is used. The three de novo loss-of-function variants seen in DYRK1A are used in the example below. With `denovolyze`, we get the following result:
 ```{r}
 denovolyzeByGene(genes=autismDeNovos$gene,
                  classes=autismDeNovos$class,
@@ -296,7 +298,7 @@ JSW is supported by the NIHR Biomedical Research Unit in Cardiovascular Disease 
 ##LITERATURE CITED
 
 ##KEY REFERENCE (optional)
-Samocha 2014?
+{25086666}
 
 ##INTERNET RESOURCES (optional)
 
@@ -305,6 +307,7 @@ http://denovolyzer.org/
 http://jamesware.github.io/denovolyzeR/  
 
 ##FIGURE LEGENDS
+na
 
 ##TABLES
 na
@@ -328,28 +331,6 @@ For questions about our submissions site (ScholarOne Manuscripts), your Contribu
 J - 
 write demo for alternate prob table
 viewProbabilityTables()
-refine use of rename package???
-Will need to define abbreviations (lof etc) somewhere
-Get rid of warning (a bug) - DONE
-use de novos  broken by class 0 DONE
-
-K - 
-de novos broken down by class - DONE
-alt prob table - DONE
-Kaitlin first pass references
-first pass ackground
-
-Either -
-resolve gene ID mismatches
-
-
-## Other notes to self
-
-list all arguments as an appendix or support protocol?
-
-- geneId
-- signifP
-- roundExpected
 
 
 ```{r viewProbabilityTable}
