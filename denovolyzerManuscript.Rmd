@@ -326,7 +326,7 @@ Help on any of the functions described is available using the standard `R` help 
 Users may want to view or export the probability tables that underpin these analyses.  These are best accessed using the `viewProbabilityTable` function.
 
 ```{r viewProbabilityTable}
-probabilityTable <- viewDeNovoProbs()
+probabilityTable <- viewProbabilityTable()
 nrow(probabilityTable); head(probabilityTable)
 ```
 
