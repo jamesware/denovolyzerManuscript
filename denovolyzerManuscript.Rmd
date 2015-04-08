@@ -1,6 +1,6 @@
 ---
 title: "Interpreting *de novo* variation in human disease using **denovolyzeR**"
-author: "Authors: James S. Ware^1-4^*, Kaitlin E. Samocha^1-3^, Mark J. Daly^1-3^"
+author: "Authors: James S. Ware^1-4^*, Kaitlin E. Samocha^1-3^, Jason Homsy^1^, Mark J. Daly^1-3^"
 output:
   word_document:
     reference_docx: template.docx
@@ -209,6 +209,12 @@ denovolyzeByGene(genes=autismDeNovos$gene,
 ```{r, include=FALSE}
 nTests=length(unique(denovolyzeR:::pDNM$geneName))
 bonferroni=signif(0.05/(2*length(unique(denovolyzeR:::pDNM$geneName))),2)
+mySciFormat <- function(x){
+  # x = number in scientific notation
+  x <- unlist(strsplit(as.character(x),"e")) 
+  return(paste("$",x[1],"\\!\\times\\!10^{",x[2],"}$",sep=""))
+}
+bonferroni <- mySciFormat(bonferroni)
 ```
 
 The p-values returned are not corrected for multiple testing. These default options apply two tests across `r nTests` genes, so a Bonferroni corrected p-value threshold at α = 0.05 would be `r bonferroni`.
@@ -416,8 +422,6 @@ system.time(denovolyzeByGene(genes=autismDeNovos$gene,classes=autismDeNovos$clas
 ##ACKNOWLEDGEMENT
 JSW is supported by the NIHR Biomedical Research Unit in Cardiovascular Disease at Royal Brompton
 & Harefield NHS Foundation Trust and Imperial College London, Academy of Medical Sciences, Wellcome Trust, British Heart Foundation Arthritis Research UK, Fondation Leducq, and  an HICF award from Wellcome Trust and Department of Health.  
-**Acknowledge DM / CES/ JGS?**  
-**Any developers / contributors?**  
 
 ##LITERATURE CITED
 
