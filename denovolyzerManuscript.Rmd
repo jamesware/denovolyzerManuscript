@@ -406,10 +406,13 @@ ppois(q=n_lof_dyrk1a-1, #observed - 1
       lower.tail=FALSE)
 ```
 
+**Control subjects**
+Since this analytic framework compares *de novo* events to a model-derived expectation, there is no direct comparison of cases with controls.  As described above, direct case-control comparison is not statistically powerful in this context.  It is nonetheless recommended to include a control arm in analyses, for example by repeating the analyses described above on a cohort of controls which have been subjected to the same sequencing and *de novo* identification pipeline.  While cases and controls are not directly compared, it is valuable to confirm that the burden of variants in the control population does not deviate substantially from model-derived expectations, in order to validate the model for the specific sequencing approaches used in each study.
 
 ####Critical Parameters   
 The number of samples (`nsamples`) should be the total number of samples in the study, not just those that carry *de novo* variants.  
 The analysis described in BASIC PROTOCOL 2 is highly sensitive to the choice of argument passed to `nVars`. Full details are provided in step 3 of that protocol.
+
 
 ####Troubleshooting  
 Leave blank
