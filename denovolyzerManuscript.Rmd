@@ -18,12 +18,6 @@ Contact information
 ^5^ Cardiovascular Research Center, Massachusetts General Hospital, Boston MA
 * corresponding author
 
-###This will be removed from final manuscript, but prevents permutations from re-running every time manuscript is updated during draft phase...
-```{r}
-library(knitr)
-opts_chunk$set(cache=T)
-```
-
 ##ABSTRACT
 Spontaneously arising (*de novo*) genetic variants are important in human disease, yet every individual carries many such variants, with a median of 1 *de novo* variant affecting the protein-coding portion of the genome.  A recently described mutational model {25086666} provides a powerful framework for the robust statistical evaluation of such coding variants, enabling the interpretation of *de novo* variation in human disease.  Here we describe a new open-source software package, **denovolyzeR**, that implements this model and provides tools for the analysis of *de novo* coding sequence variants.
 
