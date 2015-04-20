@@ -6,16 +6,12 @@ output:
     reference_docx: template.docx
 ---
 
-Alternative title ideas:  
-A statistical approach to assess the frequency of *de novo* variation  
-Interpreting *de novo* variation in human disease: a model-based approach  
-
 Contact information  
 ^1^ Department of Genetics, Harvard Medical School, Boston MA  
 ^2^ Broad Institute of MIT and Harvard, Cambridge MA  
 ^3^ Analytical and Translational Genetics Unit, Massachusetts General Hospital and Harvard Medical School, Boston MA  
 ^4^ NIHR Cardiovascular Biomedical Research Unit at Royal Brompton Hospital and Imperial College London, London UK  
-^5^ Cardiovascular Research Center, Massachusetts General Hospital, Boston MA
+^5^ Cardiovascular Research Center, Massachusetts General Hospital, Boston MA  
 * corresponding author
 
 ##ABSTRACT
@@ -31,9 +27,9 @@ Exome sequencing and analysis of *de novo* variants has successfully identified 
 
 By contrast, it is more challenging to dissect the role of *de novo* variants in conditions with high levels of locus heterogeneity, including heritable complex traits and some Mendelian conditions, where *de novo* variants may be spread across many genes, and may make a smaller overall contribution to pathogenesis. Here it may be possible to assess the global contribution of *de novo* coding variants to disease by comparing their frequency in cases and controls, given sufficiently large sample sizes. However, at the level of individual genes, the interpretation of *de novo* variants is complicated by the background mutation rate, which varies greatly between genes. Additionally, as more individuals are sequenced, it is inevitable that multiple *de novo* variants will be observed in some genes by chance.
 
-A statistical framework has recently been developed to address these challenges {25086666}, with respect to *de novo* single nucleotide variants (SNVs) in coding sequence. Briefly, the mutability of each gene is individually determined based on local sequence context, and the probability that a *de novo* event will arise in a single copy of the gene in one generation is calculated. The consequence of each possible *de novo* SNV is computed, and *de novo* probabilities are tabulated for each variant class. In order to more fully assess loss-of-function (lof) variation, the probability of a frameshifting insertion or deletion is also estimated for all genes (proportional to the length of the gene and the ratio of nonsense to frameshifting indels genome-wide under the assumption that the two classes have similar selective pressure against them). For a given study population, *de novo* variants can be evaluated by comparing the observed numbers of variants with the number expected based on this model and the population size, using a Poisson framework. This permits robust significance estimates for the pileup of *de novo* variation in individual genes and gene sets, and increases the power of genome-wide analyzes.
+A statistical framework has recently been developed to address these challenges, with respect to *de novo* single nucleotide variants (SNVs) in coding sequence {25086666}. Briefly, the mutability of each gene is individually determined based on local sequence context, and the probability that a *de novo* event will arise in a single copy of the gene in one generation is calculated. The consequence of each possible *de novo* SNV is computed, and *de novo* probabilities are tabulated for each variant class (e.g. synonymous, missense, etc). In order to more fully assess loss-of-function (lof) variation, the probability of a frameshifting insertion or deletion is also estimated for all genes (proportional to the length of the gene and the ratio of nonsense to frameshifting indels genome-wide under the assumption that the two classes have similar selective pressure against them). For a given study population, *de novo* variants can be evaluated by comparing the observed numbers of variants with the number expected based on this model and the population size, using a Poisson framework. This permits robust significance estimates for the pileup of *de novo* variation in individual genes and gene sets, and increases the power of genome-wide analyses.
 
-In this unit, we describe the application of this statistical framework to analyze *de novo* variants using **denovolyzeR** {http://denovolyzer.org}, an open-source software package written for the `R` statistical software environment {R: A Language and Environment for Statistical Computing}. We present protocols for four analyzes: to assess (i) whether there is a genome-wide excess of *de novo* variation for different functional classes of variant, (ii) whether there is a genome-wide excess of genes with multiple *de novo* variants, (iii) whether individual genes carry an excess of *de novo* variants, and (iv) whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. 
+In this unit, we describe the application of this statistical framework to analyze *de novo* variants using **denovolyzeR**, an open-source software package written for the `R` statistical software environment {R: A Language and Environment for Statistical Computing}. We present protocols for four analyses: to assess (i) whether there is a genome-wide excess of *de novo* variation for different functional classes of variant, (ii) whether there is a genome-wide excess of genes with multiple *de novo* variants, (iii) whether individual genes carry an excess of *de novo* variants, and (iv) whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. 
 
 
 #BASIC PROTOCOL 1
@@ -59,6 +55,8 @@ install.packages("dplyr","reshape")
 Example data is included in the **denovolyzeR** package, and will be used in this protocol. The dataset comprises a `data.frame` of *de novo* variants identified in 1078 individuals with autism {25086666}, named `autismDeNovos`.  
 It is assumed that readers are able to import their own data into the `R` environment, using the `read.table` function or equivalent (in R, `?read.table` will provide help).  
 
+<br>
+
 1) In R, load the **denovolyzeR** package.
 ```{r, message=FALSE, warning=FALSE}
 library(denovolyzeR)
@@ -72,13 +70,13 @@ dim(autismDeNovos); head(autismDeNovos)
 
 Variant classes must be labeled using the following terms:  
 "syn" (synonymous), "mis" (missense), "non" (nonsense), "splice" (canonical splice site) or "frameshift". Alternatively, "lof" may by used collectively for loss-of-function classes ("non + splice + frameshift").
-Whichever input format is chosen, summary statistics can be produced for "lof", "prot" (protein-altering = mis + lof), and "all".  "prot" and "all" are not valid input classes. In-frame insertions/deletions are currently not eevaluated within the statistical framework.
+Whichever input format is chosen, summary statistics can be produced for "lof", "prot" (protein-altering = mis + lof), and "all".  "prot" and "all" are not valid input classes. In-frame insertions/deletions are currently not evaluated within the statistical framework.
 
 ```{r, include=F}
 geneIdentifiers <- names(dplyr::select(denovolyzeR:::pDNM,-class,-value))
 ```
 
-A variety of gene identifiers may be used.  Valid identifiers recognized by the software include: `r geneIdentifiers`.  The default option ("geneName") specifies gene symbols by default, more specifically, these correspond to the "external\_gene\_name" provided by the Ensembl genome browser {25352552}. ensgID and enstID refer to Ensembl gene and transcript identifiers. hgncID and hgncSymbol refer to HUGO Gene Nomenclature Committee ID numbers and symbols. Within the `R` environment, the `BiomaRt` package from Bioconductor provides tools to convert gene identifiers {19617889}.
+A variety of gene identifiers may be used.  Valid identifiers recognized by the software include: `r geneIdentifiers`.  The default option ("geneName") specifies gene symbols by default, more specifically, these correspond to the "external\_gene\_name" provided by the Ensembl genome browser {25352552}. ensgID and enstID refer to Ensembl gene and transcript identifiers. hgncID and hgncSymbol refer to HUGO Gene Nomenclature Committee ID numbers and symbols. Within the `R` environment, the `BiomaRt` package {19617889} from Bioconductor provides tools to convert gene identifiers.
 
 3) Compare the observed burden of *de novo* variation to expectation.
 
@@ -134,7 +132,7 @@ library(denovolyzeR)
 2) The `denovolyzeMultiHits` function will perform the required analysis. 
 The same three arguments are required as for BASIC PROTOCOL 1: `genes` (vector of genes containing *de novo* variants), `classes` (a vector of variant consequences) and `nsamples` (number of samples).  In addition, `nperms` determines the number of permutations run (defaults to 100).
 
-The function asks the question "given `nVars` variants in a set of genes, how many genes are expected to contain more than one variant?"
+The function addresses the questions "given `nVars` variants in a set of genes, how many genes are expected to contain more than one variant? Do we observe more than this?"
 ```{r}
 denovolyzeMultiHits(genes=autismDeNovos$gene,
                     classes=autismDeNovos$class,
@@ -200,11 +198,11 @@ head(
 ```{r, message=FALSE}
 library(dplyr)
 denovolyzeByGene(genes=autismDeNovos$gene,
-                   classes=autismDeNovos$class,
-                   nsamples=1078) %>%
+                 classes=autismDeNovos$class,
+                 nsamples=1078) %>%
   subset(prot.obs>1)
 ```
-In this example we have used the pipe notation "%>%" to pass the output of **denovolyzeR** to the `subset` function. This is available as part of the `dplyr` package, which is required for denovoloyzeR installation.
+In this example we have used the pipe notation "%>%" to pass the output of **denovolyzeR** to the `subset` function. The pipe is available as part of the `dplyr` package, which is required for **denovoloyzeR** installation.
  
 
 ```{r, include=FALSE}
@@ -217,7 +215,7 @@ mySciFormat <- function(x){
 }
 ```
 
-The p-values returned are not corrected for multiple testing. These default options apply two tests ("lof" and "prot") across `r nTests` genes, so a Bonferroni corrected p-value threshold at α = 0.05 would be `r mySciFormat(bonferroni)` ($0.05 / 2 * `r bonferroni`$).
+The p-values returned are not corrected for multiple testing. These default options apply two tests ("lof" and "prot") across `r nTests` genes, so a Bonferroni corrected p-value threshold at α = 0.05 would be `r mySciFormat(bonferroni)` ($0.05 / 2 * `r nTests`$).
 
 By default this function compares the number of lof variants against expectation for each gene, and then the total number of protein-altering variants (lof + missense). It can also be configured to return other classes if relevant, using the `includeClasses` argument.
 ```{r}
@@ -234,7 +232,7 @@ head(
 
 #BASIC PROTOCOL 4
 ##Assessing a pre-specified gene set
-This protocol assesses whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. Note that any of the previous analyzes can be restricted to a pre-specified geneset in the same way, using the `includeGenes` argument. This may be appropriate if a smaller panel of genes have been sequenced (rather than whole exome sequencing), or to explore biologically relevant genesets, e.g. defined by gene ontology, or expression profile.
+This protocol assesses whether a pre-specified set of genes collectively shows an enrichment of *de novo* variants. Note that any of the previous analyses can be restricted to a pre-specified gene set in the same way, using the `includeGenes` argument. This may be appropriate if a smaller panel of genes have been sequenced (rather than whole exome sequencing), or to explore biologically relevant gene sets, e.g. defined by gene ontology, or expression profile.
 
 ###Materials
 As for protocol 1
@@ -244,7 +242,7 @@ As for protocol 1
 library(denovolyzeR)
 ```
 
-2) Define a geneset. This should be a vector of genes, which may be entered by hand, or read from file using `read.table` or equivalent.  In this example, we use an example geneset included with the **denovolyzeR** package, a list of `r nrow(denovolyzeR::fmrpGenes)` genes that interact with the fragile X mental retardation protein (FMRP), taken from {21784246}.
+2) Define a gene set. This should be a vector of genes, which may be entered by hand, or read from file using `read.table` or equivalent.  In this example, we use an example gene set included with the **denovolyzeR** package, a list of `r nrow(denovolyzeR::fmrpGenes)` genes that interact with the fragile X mental retardation protein (FMRP), taken from {21784246}.
 ```{r}
 nrow(fmrpGenes);head(fmrpGenes)
 ```
@@ -256,7 +254,7 @@ denovolyzeByClass(genes=autismDeNovos$gene,
                   nsamples=1078,
                   includeGenes=fmrpGenes$geneName)
 ```
-In this example we see a highly significant enrichment of *de novo* lof variants in genes that interact with FMRP in our cohort of autism cases. Care should be taken to ensure that the same gene identifiers are used throughout the analysis. For example, if the list of genes containing *de novo* variants includes KMT2D (previously known as MLL2) but the geneset uses the old symbol MLL2, these will not be matched.  The function will give a warning if gene identifiers are used that are not found in the internal mutation probability tables.  
+In this example we see a highly significant enrichment of *de novo* lof variants in genes that interact with FMRP in our cohort of autism cases. Care should be taken to ensure that the same gene identifiers are used throughout the analysis. For example, if the list of genes containing *de novo* variants includes KMT2D (previously known as MLL2) but the gene set uses the old symbol MLL2, these will not be matched.  The function will give a warning if gene identifiers are used that are not found in the internal mutation probability tables.  
 
 For many genes, the Ensembl gene name and HGNC symbol will be identical, but in some instances they differ (e.g. where there is no HGNC identifier, and Ensembl uses a symbol from another source). Note that we receive a warning if we pass a list of genes described using Ensembl gene symbols (the demonstration data), but tell the software to match to HGNC symbols.
 ```{r}
@@ -315,11 +313,11 @@ denovolyze(genes=autismDeNovos$gene,
 
 #SUPPORT PROTOCOL 1
 ##Getting help
-Help on any of the functions described is available using the standard `R` help functions, e.g. `help(denovolyze)` or `?denovolyze`.  Additional details are also available in the package vignette, accessed using `vignette("denovolyzeR_intro")`.
+Help on any of the functions described is available using the standard `R` help functions, e.g. `help(denovolyze)` or `?denovolyze`.  Additional details are also available in the package vignette, accessed using `browseVignettes("denovolyzeR")`.
 
 #SUPPORT PROTOCOL 2
 ##Viewing the mutational probability tables
-Users may want to view or export the probability tables that underpin these analyzes.  These are best accessed using the `viewProbabilityTable` function.
+Users may want to view or export the probability tables that underpin these analyses.  These are best accessed using the `viewProbabilityTable` function.
 
 ```{r viewProbabilityTable}
 probabilityTable <- viewProbabilityTable()
@@ -378,7 +376,7 @@ The mutational model is described in full detail in {25086666}. Briefly, it is b
 
 Previous work established that the mutability of a base is sufficiently modeled by accounting for the local sequence context of one nucleotide on either side of the base of interest {9683596;17357078}. We analyzed human variation and trinucleotide context using intergenic single nucleotide polymorphisms (SNPs) from the 1000 Genomes project to create a mutation rate table, which provides the relative probabilities of each possible trinucleotide (XY^1^Z) to trinucleotide (XY^2^Z) change.
 
-We then consider each base in the coding sequence and use the mutation rate table to determine its probability of mutating to the other bases. We predict the impact of the mutation on the protein product and aggregate the probabilities by mutation type across each gene. These per-gene probabilities are then adjusted for how well sequenced the gene was and regional divergence between humans and macaques.
+We then consider each base in the coding sequence and use the mutation rate table to determine its probability of mutating to the other bases. We predict the impact of the mutation on the protein product and aggregate the probabilities by mutation type across each gene. These per-gene probabilities are then adjusted according to the completeness of sequencing coverage for each gene, and a regional divergence score, reflecting divergence between humans and macaques, that captures small regional differences in genome mutability that are not fully captured by local trinucleotide context.
 
 Given that the number of *de novo* variants per trio follows a Poisson distribution {22495311}, we use the Poisson distribution to evaluate the excesses of *de novo* events. As an example, to determine if a particular gene has more *de novo* loss-of-function variants than expected, we multiply that gene’s probability of a loss-of-function mutation by the number of trios and by 2 (for the number of chromosomes) in the study. This gives the expected number of *de novo* loss-of-function variants (denoted as lambda, $\lambda$) with which the observed number is compared. Specifically, the `ppois` command in `R` is used. The three *de novo* loss-of-function variants seen in DYRK1A are used in the example below. With `denovolyze`, we get the following result:
 ```{r}
@@ -415,7 +413,7 @@ Leave blank
 Leave blank
 
 ####Time Considerations  
-These analyzes are not especially computationally intensive, and will run on a desktop or laptop computer in seconds.  The `denovolyzeMultiHits` function uses permutation, and computation time increases linearly with the number of permutations.  Elapsed times (in seconds) to run the three principal functions on *de novo* variants from 1078 samples, using default settings, on a MacBook Air (1.7GHz i7, 8Gb RAM) are as follows:
+These analyses are not especially computationally intensive, and will run on a desktop or laptop computer in seconds.  The `denovolyzeMultiHits` function uses permutation, and computation time increases linearly with the number of permutations.  Elapsed times (in seconds) to run the three principal functions on *de novo* variants from 1078 samples, using default settings, on a MacBook Air (1.7GHz i7, 8Gb RAM) are as follows:
 ```{r, collapse=FALSE}
 system.time(denovolyzeByClass(genes=autismDeNovos$gene,classes=autismDeNovos$class,nsamples=1078))["elapsed"]
 system.time(denovolyzeMultiHits(genes=autismDeNovos$gene,classes=autismDeNovos$class,nsamples=1078,nperms=1000))["elapsed"]
@@ -433,14 +431,9 @@ JGH is supported by the John S. LaDue Fellowship at Harvard Medical School.
 ##KEY REFERENCE (optional)
 {25086666}
 
-##INTERNET RESOURCES (optional)
+##INTERNET RESOURCES
 
 http://www.r-project.org/  
+http://cran.r-project.org/web/packages/denovolyzeR/  
 http://denovolyzer.org/  
-http://jamesware.github.io/denovolyzeR/  
-
-##FIGURE LEGENDS
-na
-
-##TABLES
-na
+http://github.com/jamesware/denovolyzeR
