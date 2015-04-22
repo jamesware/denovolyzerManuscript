@@ -144,7 +144,7 @@ For each variant class, the function returns the observed number of genes contai
 denovolyzeMultiHits(genes=autismDeNovos$gene,
                     classes=autismDeNovos$class,
                     nsamples=1078,
-                    nperms=5000,
+                    nperms=200,
                     includeClasses="prot")
 ```
 Note that the exact numbers may change slightly between runs of `denovolyzeMultiHits` due to stochastic changes in the permutations. These stochastic fluctuations are likely to be small for large numbers of permutations.
