@@ -2,5 +2,8 @@
 .Rhistory
 .RData
 denovolyzerManuscript*.docx
+denovolyzerManuscript_test*
 *cache
+exampleProtocols/
+postReview/
 exampleProtocols/*CP-Contributor-Agreement_Completed.pdf
